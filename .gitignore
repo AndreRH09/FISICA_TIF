@@ -1,0 +1,50 @@
+# Entorno virtual
+myenv/
+  
+# Archivos de compilación y cachés
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Archivos de configuración del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de configuraciones del entorno
+.env
+*.env
+
+# Archivos y directorios del editor
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Archivos de datos temporales y logs
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Archivos de base de datos locales
+*.sqlite3
+*.db
+
+# Archivos de prueba
+.coverage
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Archivos generados por herramientas de documentación
+docs/_build/
+build/
+dist/
+*.egg-info/
+.eggs/
+MANIFEST
+*.py[cod]
+*.pyo
+*.pyd
