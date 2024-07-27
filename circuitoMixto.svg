@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2024-07-27T15:33:41.491759</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.9.1, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="circuit">
+  <!-- Batería -->
+  <line x1="50" y1="50" x2="50" y2="100" stroke="black" stroke-width="2"/>
+  <line x1="50" y1="60" x2="70" y2="60" stroke="black" stroke-width="2"/>
+  <line x1="50" y1="90" x2="70" y2="90" stroke="black" stroke-width="2"/>
+  <line x1="70" y1="60" x2="70" y2="90" stroke="black" stroke-width="2"/>
+  <line x1="70" y1="60" x2="90" y2="75" stroke="black" stroke-width="2"/>
+  <line x1="70" y1="90" x2="90" y2="75" stroke="black" stroke-width="2"/>
+  <text x="20" y="75" font-family="Arial" font-size="12">10V</text>
+
+  <!-- Resistor R1 -->
+  <line x1="90" y1="75" x2="150" y2="75" stroke="black" stroke-width="2"/>
+  <rect x="100" y="70" width="30" height="10" fill="none" stroke="black" stroke-width="2"/>
+  <text x="120" y="65" font-family="Arial" font-size="12">R1</text>
+  <text x="120" y="90" font-family="Arial" font-size="12">100Ω</text>
+
+  <!-- Resistor R2 -->
+  <line x1="150" y1="75" x2="210" y2="75" stroke="black" stroke-width="2"/>
+  <rect x="160" y="70" width="30" height="10" fill="none" stroke="black" stroke-width="2"/>
+  <text x="180" y="65" font-family="Arial" font-size="12">R2</text>
+  <text x="180" y="90" font-family="Arial" font-size="12">200Ω</text>
+
+  <!-- Conexión a R3 y R4 en paralelo -->
+  <line x1="210" y1="75" x2="210" y2="150" stroke="black" stroke-width="2"/>
+  <line x1="210" y1="75" x2="280" y2="75" stroke="black" stroke-width="2"/>
+
+  <!-- Resistor R3 -->
+  <line x1="210" y1="150" x2="280" y2="150" stroke="black" stroke-width="2"/>
+  <rect x="220" y="145" width="30" height="10" fill="none" stroke="black" stroke-width="2"/>
+  <text x="240" y="140" font-family="Arial" font-size="12">R3</text>
+  <text x="240" y="165" font-family="Arial" font-size="12">150Ω</text>
+
+  <!-- Resistor R4 -->
+  <line x1="280" y1="75" x2="280" y2="150" stroke="black" stroke-width="2"/>
+  <rect x="260" y="70" width="30" height="10" fill="none" stroke="black" stroke-width="2"/>
+  <text x="270" y="65" font-family="Arial" font-size="12">R4</text>
+  <text x="270" y="90" font-family="Arial" font-size="12">350Ω</text>
+
+  <!-- Unión de R3 y R4 -->
+  <line x1="280" y1="150" x2="350" y2="150" stroke="black" stroke-width="2"/>
+  <line x1="350" y1="150" x2="350" y2="75" stroke="black" stroke-width="2"/>
+  <line x1="350" y1="75" x2="400" y2="75" stroke="black" stroke-width="2"/>
+
+  <!-- Cierre del circuito -->
+  <line x1="400" y1="75" x2="400" y2="50" stroke="black" stroke-width="2"/>
+  <line x1="400" y1="50" x2="50" y2="50" stroke="black" stroke-width="2"/>
+
+  <!-- Solución -->
+  <text x="50" y="200" font-family="Arial" font-size="16" fill="blue">SOLUCION:</text>
+  <text x="50" y="220" font-family="Arial" font-size="14">Re = 405 Ω</text>
+  <text x="50" y="240" font-family="Arial" font-size="14">Itotal = 0.025 A</text>
+</svg>

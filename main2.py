@@ -1,122 +1,73 @@
-import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+import networkx as nx
+import matplotlib.pyplot as plt
 
-class SubCircuit:
-    def __init__(self, tipo_conexion):
-        self.resistencias = []
-        self.tipo_conexion = tipo_conexion
+class Circuit:
+    def __init__(self):
+        self.graph = nx.Graph()
 
-    def agregar_resistencia(self, resistencia):
-        self.resistencias.append(resistencia)
+    def add_node(self, node):
+        self.graph.add_node(node)
 
-    def calcular_resistencia_total(self):
-        if not self.resistencias:
-            return 0
-        if self.tipo_conexion == "serie":
-            return sum(self.resistencias)
-        elif self.tipo_conexion == "paralelo":
-            try:
-                return 1 / sum(1 / r for r in self.resistencias if r != 0)
-            except ZeroDivisionError:
-                raise ValueError("Una de las resistencias es cero. No se puede calcular la resistencia total en paralelo con una resistencia de valor cero.")
-        else:
-            raise ValueError("Tipo de conexión no válido.")
+    def add_resistance(self, node1, node2, resistance):
+        self.graph.add_edge(node1, node2, weight=resistance)
 
-class CircuitSimulator:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Simulador de Circuitos Eléctricos")
+    def series_resistance(self, resistances):
+        return sum(resistances)
 
-        self.subcircuitos = []
-        self.conexion_tipo = tk.StringVar(value="serie")
-        self.current_subcircuit = SubCircuit(self.conexion_tipo.get())
+    def parallel_resistance(self, resistances):
+        reciprocal_sum = sum(1 / r for r in resistances)
+        return 1 / reciprocal_sum if reciprocal_sum != 0 else float('inf')
 
-        self.create_widgets()
+    def simplify_parallel(self):
+        while True:
+            nodes_to_contract = []
+            for node in self.graph.nodes:
+                neighbors = list(self.graph.neighbors(node))
+                if len(neighbors) == 2:
+                    weight1 = self.graph[node][neighbors[0]]['weight']
+                    weight2 = self.graph[node][neighbors[1]]['weight']
+                    parallel_res = self.parallel_resistance([weight1, weight2])
+                    nodes_to_contract.append((neighbors[0], neighbors[1], parallel_res, node))
 
-    def create_widgets(self):
-        tk.Label(self.root, text="Voltaje (V):").grid(row=0, column=0, padx=10, pady=5)
-        self.entry_voltaje = tk.Entry(self.root)
-        self.entry_voltaje.grid(row=0, column=1, padx=10, pady=5)
+            if not nodes_to_contract:
+                break
 
-        tk.Label(self.root, text="Resistencia (Ω):").grid(row=1, column=0, padx=10, pady=5)
-        self.entry_resistencia = tk.Entry(self.root)
-        self.entry_resistencia.grid(row=1, column=1, padx=10, pady=5)
+            for n1, n2, res, intermediate in nodes_to_contract:
+                self.graph.add_edge(n1, n2, weight=res)
+                self.graph.remove_node(intermediate)
 
-        tk.Label(self.root, text="Tipo de Conexión:").grid(row=2, column=0, padx=10, pady=5)
-        ttk.Radiobutton(self.root, text="Serie", variable=self.conexion_tipo, value="serie").grid(row=2, column=1, padx=5, pady=5)
-        ttk.Radiobutton(self.root, text="Paralelo", variable=self.conexion_tipo, value="paralelo").grid(row=2, column=2, padx=5, pady=5)
+    def equivalent_resistance(self):
+        self.simplify_parallel()
 
-        self.button_agregar = tk.Button(self.root, text="Agregar Resistencia", command=self.agregar_resistencia)
-        self.button_agregar.grid(row=3, column=0, columnspan=3, pady=10)
+        total_resistance = 0
+        for edge in self.graph.edges(data=True):
+            total_resistance += edge[2]['weight']
 
-        self.button_nuevo_subcircuito = tk.Button(self.root, text="Nuevo Subcircuito", command=self.nuevo_subcircuito)
-        self.button_nuevo_subcircuito.grid(row=4, column=0, columnspan=3, pady=10)
+        return total_resistance
 
-        self.lista_resistencias = tk.Listbox(self.root, width=50)
-        self.lista_resistencias.grid(row=5, column=0, columnspan=3, padx=10, pady=5)
+    def display_graph(self):
+        pos = nx.spring_layout(self.graph)
+        weights = nx.get_edge_attributes(self.graph, 'weight')
+        nx.draw(self.graph, pos, with_labels=True, node_color='skyblue', node_size=700, edge_color='gray')
+        nx.draw_networkx_edge_labels(self.graph, pos, edge_labels=weights)
+        plt.show()
 
-        self.button_calcular = tk.Button(self.root, text="Calcular", command=self.calcular)
-        self.button_calcular.grid(row=6, column=0, columnspan=3, pady=10)
+# Ejemplo de uso
+circuit = Circuit()
+circuit.add_node('A')
+circuit.add_node('B')
+circuit.add_node('C')
+circuit.add_node('D')
 
-        self.button_reiniciar = tk.Button(self.root, text="Reiniciar", command=self.reiniciar)
-        self.button_reiniciar.grid(row=7, column=0, columnspan=3, pady=10)
+# Añadir resistencias
+circuit.add_resistance('A', 'B', 2)  # R1
+circuit.add_resistance('B', 'C', 5)  # R2
+circuit.add_resistance('B', 'D', 5)  # R3
+circuit.add_resistance('C', 'D', 0)  # Conexión entre R2 y R3
 
-        self.label_resultado = tk.Label(self.root, text="")
-        self.label_resultado.grid(row=8, column=0, columnspan=3, pady=10)
+# Calcular resistencia equivalente total
+R_total = circuit.equivalent_resistance()
+print("Resistencia equivalente total:", R_total)
 
-    def agregar_resistencia(self):
-        try:
-            valor = float(self.entry_resistencia.get())
-            if valor <= 0:
-                raise ValueError
-            self.current_subcircuit.agregar_resistencia(valor)
-            self.lista_resistencias.insert(tk.END, f"Resistencia: {valor} Ω ({self.conexion_tipo.get()})")
-            self.entry_resistencia.delete(0, tk.END)
-        except ValueError:
-            messagebox.showerror("Error", "Por favor, ingrese un valor de resistencia válido.")
-
-    def nuevo_subcircuito(self):
-        if self.current_subcircuit.resistencias:
-            self.subcircuitos.append(self.current_subcircuit)
-            self.lista_resistencias.insert(tk.END, f"Subcircuito: {self.current_subcircuit.tipo_conexion}, Resistencia Total: {self.current_subcircuit.calcular_resistencia_total():.2f} Ω")
-        self.current_subcircuit = SubCircuit(self.conexion_tipo.get())
-        self.lista_resistencias.insert(tk.END, "---- Nuevo Subcircuito ----")
-
-    def calcular(self):
-        try:
-            voltaje = float(self.entry_voltaje.get())
-            if not self.subcircuitos and not self.current_subcircuit.resistencias:
-                raise ValueError("No hay resistencias para calcular.")
-
-            if self.current_subcircuit.resistencias:
-                self.subcircuitos.append(self.current_subcircuit)
-                self.lista_resistencias.insert(tk.END, f"Subcircuito: {self.current_subcircuit.tipo_conexion}, Resistencia Total: {self.current_subcircuit.calcular_resistencia_total():.2f} Ω")
-
-            resistencia_total = 0
-            detalles_subcircuitos = []
-            for subcircuito in self.subcircuitos:
-                resistencia_subcircuito = subcircuito.calcular_resistencia_total()
-                resistencia_total += resistencia_subcircuito
-                detalles_subcircuitos.append(f"Subcircuito ({subcircuito.tipo_conexion}): {resistencia_subcircuito:.2f} Ω")
-
-            corriente = voltaje / resistencia_total
-            detalles = "\n".join(detalles_subcircuitos)
-            self.label_resultado.config(text=f"{detalles}\n\nResistencia Total del Circuito: {resistencia_total:.2f} Ω\nCorriente: {corriente:.2f} A")
-        except ValueError as e:
-            messagebox.showerror("Error", f"Error: {e}")
-        except ZeroDivisionError:
-            messagebox.showerror("Error", "Una de las resistencias es cero. No se puede calcular la resistencia total en paralelo con una resistencia de valor cero.")
-
-    def reiniciar(self):
-        self.subcircuitos = []
-        self.current_subcircuit = SubCircuit(self.conexion_tipo.get())
-        self.lista_resistencias.delete(0, tk.END)
-        self.label_resultado.config(text="")
-        self.entry_voltaje.delete(0, tk.END)
-        self.entry_resistencia.delete(0, tk.END)
-
-# Crear la ventana principal y la aplicación
-root = tk.Tk()
-app = CircuitSimulator(root)
-root.mainloop()
+# Mostrar el grafo
+circuit.display_graph()
