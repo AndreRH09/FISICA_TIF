@@ -11,5 +11,6 @@ with schemdraw.Drawing() as d:
     d += elm.Resistor().right().label(f'R1 (Ω)')
     d += elm.Line().down()
     d += elm.Line().left()
+    d.save('img/circuit1.png')
 # Mostrar el gráfico
 plt.show()
