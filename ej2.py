@@ -51,8 +51,8 @@ ax_resistance.xaxis.set_visible(False)
 ax_resistance.yaxis.set_visible(False)
 
 a = ax_resistance.text(0, 0.01, f'Resistencia Total: {1 / (1 / R1_init + 1 / R2_init + 1 / R3_init):.2f} Ω', fontsize=10, va='center')
-b = ax_resistance.text(0.62, 0.01, f'Intensidad Total: {current:.2f} A', fontsize=10, va='center', ha='center')
-c = ax_resistance.text(1.15, 0.01, f'Voltaje Total: {V_init} V', fontsize=10, va='center', ha='right')
+b = ax_resistance.text(0.5, 0.01, f'Intensidad Total: {current:.2f} A', fontsize=10, va='center', ha='center')
+c = ax_resistance.text(1.1, 0.01, f'Voltaje Total: {V_init} V', fontsize=10, va='center', ha='right')
 
 # Función para actualizar la corriente basada en los valores de los sliders
 def update_current(val):
@@ -79,6 +79,7 @@ def reset(event):
     s_res1.set_val(R1_init)
     s_res2.set_val(R2_init)
     s_res3.set_val(R3_init)
+    s_res4.set_val(R4_init)
     ax_current.clear()
     update_current(None)
     ani.event_source.stop()
